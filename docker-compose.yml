@@ -1,0 +1,29 @@
+version: '3.1'
+
+services:
+    postgres:
+      image: postgres
+      restart: always
+      environment:
+        POSTGRES_USER: test
+        POSTGRES_PASSWORD: test
+        POSTGRES_DATABASE: test
+        POSTGRES_ROOT_PASSWORD: test
+        pgdata: data-pstgresql
+      ports:
+      - "5432:5432"
+      volumes:
+      - data-pstgresql:/data
+      - ./sql:/docker-entrypoint-initdb.d
+
+#    go-rest-api:
+#      restart: always
+#      container_name: go-rest-api
+#      image: "docker.go-test.com/go-rest-api:latest"
+#      build:
+#        context: .
+#      ports:
+#      - "9000:9000"
+
+volumes:
+    data-pstgresql:
