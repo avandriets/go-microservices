@@ -1,10 +1,10 @@
 package controller
 
 import (
+	"../blob-reader"
+	"../messages"
+	"../model"
 	"fmt"
-	"go-microservices/file-reader-service/blob-reader"
-	"go-microservices/file-reader-service/messages"
-	"go-microservices/file-reader-service/model"
 	"log"
 	"net/http"
 	"strconv"
@@ -28,5 +28,5 @@ func dataSender(row string) {
 }
 
 func CSVReader(w http.ResponseWriter, r *http.Request) {
-	blob_reader.ReadCSVFile("/Users/andriets/go/src/go-microservices/file-reader-service/data/data.csv", dataSender)
+	blob_reader.ReadCSVFile("./data/data.csv", dataSender)
 }

@@ -1,8 +1,8 @@
 package model
 
 import (
+	"../messages"
 	"context"
-	"go-microservices/file-reader-service/messages"
 	"google.golang.org/grpc"
 	"time"
 )

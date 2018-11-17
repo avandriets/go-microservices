@@ -1,11 +1,11 @@
 package main
 
 import (
+	"./controller"
+	"./messsages"
+	"./model"
 	"context"
 	"fmt"
-	"go-microservices/storage-service/controller"
-	"go-microservices/storage-service/messsages"
-	"go-microservices/storage-service/model"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 	"log"

@@ -16,14 +16,31 @@ services:
       - data-pstgresql:/data
       - ./sql:/docker-entrypoint-initdb.d
 
-#    go-rest-api:
-#      restart: always
-#      container_name: go-rest-api
-#      image: "docker.go-test.com/go-rest-api:latest"
-#      build:
-#        context: .
-#      ports:
-#      - "9000:9000"
+    go-csv-reader-service:
+      restart: always
+      environment:
+        TC_SERVER_HOST: go-storage-service
+        TC_SERVER_PORT: 50051
+      container_name: go-csv-reader-service
+      image: "docker.go-example.com/go-csv-reader-service:latest"
+      build:
+        context: ./file-reader-service
+      ports:
+      - "9000:9000"
+
+    go-storage-service:
+      restart: always
+      environment:
+        TC_DATABASE: test
+        TC_USER: test
+        TC_PASSWORD: test
+        TC_HOST: postgres
+      container_name: go-storage-service
+      image: "docker.go-example.com/go-storage-service:latest"
+      build:
+        context: ./storage-service
+      ports:
+      - "50051:50051"
 
 volumes:
     data-pstgresql:

@@ -1,8 +1,8 @@
 package controller
 
 import (
-	"go-microservices/storage-service/messsages"
-	"go-microservices/storage-service/model"
+	"../messsages"
+	"../model"
 	"log"
 )
 
