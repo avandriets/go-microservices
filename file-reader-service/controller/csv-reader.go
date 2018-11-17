@@ -4,12 +4,20 @@ import (
 	"../messages"
 	"../model"
 	"../reader"
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 )
+
+type TimeSpent struct {
+	Start   string `json:"start"`
+	End     string `json:"end"`
+	Elapsed string `json:"elapsed"`
+}
 
 func dataSender(row string) {
 	if len(row) > 0 {
@@ -28,5 +36,16 @@ func dataSender(row string) {
 }
 
 func CsvReader(w http.ResponseWriter, r *http.Request) {
+	start := time.Now()
 	reader.ReadCsvFile("./data/data.csv", dataSender)
+	end := time.Now()
+	elapsed := end.Sub(start)
+
+	timeSpent := TimeSpent{start.String(), end.String(), elapsed.String()}
+	encoder := json.NewEncoder(w)
+	err := encoder.Encode(&timeSpent)
+
+	if err != nil {
+		log.Printf("HTTP %s", err)
+	}
 }
