@@ -172,7 +172,7 @@ func init() {
 func init() { proto.RegisterFile("pb/messages.proto", fileDescriptor_c845ec2cade4e162) }
 
 var fileDescriptor_c845ec2cade4e162 = []byte{
-	// 194 bytes of a gzipped FileDescriptorProto
+	// 212 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x12, 0x2c, 0x48, 0xd2, 0xcf,
 	0x4d, 0x2d, 0x2e, 0x4e, 0x4c, 0x4f, 0x2d, 0xd6, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x57, 0x8a, 0xe4,
 	0x62, 0x77, 0xce, 0xcf, 0x2b, 0x49, 0x4c, 0x2e, 0x11, 0xe2, 0xe3, 0x62, 0xca, 0x4c, 0x91, 0x60,
@@ -182,10 +182,11 @@ var fileDescriptor_c845ec2cade4e162 = []byte{
 	0x05, 0x22, 0x0a, 0xe6, 0x28, 0x99, 0x70, 0xf1, 0x41, 0x8d, 0x0e, 0x4a, 0x2d, 0x2c, 0x4d, 0x2d,
 	0x2e, 0x11, 0x52, 0xe2, 0x62, 0x4f, 0x86, 0x88, 0x80, 0xad, 0xe1, 0x36, 0xe2, 0xd0, 0x83, 0xa9,
 	0x80, 0x49, 0x28, 0x99, 0x72, 0xf1, 0xc3, 0x75, 0x15, 0x17, 0xe4, 0xe7, 0x15, 0xa7, 0x12, 0xa3,
-	0xcd, 0xc8, 0x11, 0x6e, 0x59, 0x70, 0x6a, 0x51, 0x59, 0x66, 0x72, 0xaa, 0x90, 0x3e, 0x17, 0x97,
-	0x63, 0x4a, 0x0a, 0xcc, 0x73, 0xfc, 0x7a, 0xa8, 0x6e, 0x91, 0x12, 0xd0, 0x43, 0xb3, 0x26, 0x89,
-	0x0d, 0x1c, 0x22, 0xc6, 0x80, 0x00, 0x00, 0x00, 0xff, 0xff, 0x10, 0x61, 0x9d, 0x86, 0x26, 0x01,
-	0x00, 0x00,
+	0xcd, 0xa8, 0x0a, 0x6e, 0x59, 0x70, 0x6a, 0x51, 0x59, 0x66, 0x72, 0xaa, 0x90, 0x3e, 0x17, 0x97,
+	0x63, 0x4a, 0x0a, 0xcc, 0x73, 0xfc, 0x7a, 0xa8, 0x6e, 0x91, 0x12, 0xd0, 0x43, 0xb7, 0xc6, 0x9c,
+	0x8b, 0xcf, 0x31, 0x25, 0xc5, 0x31, 0x27, 0x07, 0x2a, 0x51, 0x4c, 0x84, 0x26, 0x0d, 0x46, 0x03,
+	0xc6, 0x24, 0x36, 0x70, 0x50, 0x1a, 0x03, 0x02, 0x00, 0x00, 0xff, 0xff, 0x85, 0x6a, 0x18, 0x44,
+	0x5f, 0x01, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -196,11 +197,12 @@ var _ grpc.ClientConn
 // is compatible with the grpc package it is being compiled against.
 const _ = grpc.SupportPackageIsVersion4
 
-// ContactServiceClient is the file-reader-service API for ContactService service.
+// ContactServiceClient is the client API for ContactService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type ContactServiceClient interface {
 	AddContact(ctx context.Context, in *ContactRequest, opts ...grpc.CallOption) (*ContactResponse, error)
+	AddAllContacts(ctx context.Context, opts ...grpc.CallOption) (ContactService_AddAllContactsClient, error)
 }
 
 type contactServiceClient struct {
@@ -220,9 +222,41 @@ func (c *contactServiceClient) AddContact(ctx context.Context, in *ContactReques
 	return out, nil
 }
 
-// ContactServiceServer is the storage-service API for ContactService service.
+func (c *contactServiceClient) AddAllContacts(ctx context.Context, opts ...grpc.CallOption) (ContactService_AddAllContactsClient, error) {
+	stream, err := c.cc.NewStream(ctx, &_ContactService_serviceDesc.Streams[0], "/ContactService/AddAllContacts", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &contactServiceAddAllContactsClient{stream}
+	return x, nil
+}
+
+type ContactService_AddAllContactsClient interface {
+	Send(*ContactRequest) error
+	Recv() (*ContactResponse, error)
+	grpc.ClientStream
+}
+
+type contactServiceAddAllContactsClient struct {
+	grpc.ClientStream
+}
+
+func (x *contactServiceAddAllContactsClient) Send(m *ContactRequest) error {
+	return x.ClientStream.SendMsg(m)
+}
+
+func (x *contactServiceAddAllContactsClient) Recv() (*ContactResponse, error) {
+	m := new(ContactResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+// ContactServiceServer is the server API for ContactService service.
 type ContactServiceServer interface {
 	AddContact(context.Context, *ContactRequest) (*ContactResponse, error)
+	AddAllContacts(ContactService_AddAllContactsServer) error
 }
 
 func RegisterContactServiceServer(s *grpc.Server, srv ContactServiceServer) {
@@ -247,6 +281,32 @@ func _ContactService_AddContact_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ContactService_AddAllContacts_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(ContactServiceServer).AddAllContacts(&contactServiceAddAllContactsServer{stream})
+}
+
+type ContactService_AddAllContactsServer interface {
+	Send(*ContactResponse) error
+	Recv() (*ContactRequest, error)
+	grpc.ServerStream
+}
+
+type contactServiceAddAllContactsServer struct {
+	grpc.ServerStream
+}
+
+func (x *contactServiceAddAllContactsServer) Send(m *ContactResponse) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func (x *contactServiceAddAllContactsServer) Recv() (*ContactRequest, error) {
+	m := new(ContactRequest)
+	if err := x.ServerStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 var _ContactService_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "ContactService",
 	HandlerType: (*ContactServiceServer)(nil),
@@ -256,6 +316,13 @@ var _ContactService_serviceDesc = grpc.ServiceDesc{
 			Handler:    _ContactService_AddContact_Handler,
 		},
 	},
-	Streams:  []grpc.StreamDesc{},
+	Streams: []grpc.StreamDesc{
+		{
+			StreamName:    "AddAllContacts",
+			Handler:       _ContactService_AddAllContacts_Handler,
+			ServerStreams: true,
+			ClientStreams: true,
+		},
+	},
 	Metadata: "pb/messages.proto",
 }

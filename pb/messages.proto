@@ -17,4 +17,5 @@ message ContactResponse {
 
 service ContactService {
     rpc AddContact(ContactRequest) returns (ContactResponse);
+    rpc AddAllContacts(stream ContactRequest) returns (stream ContactResponse);
 }

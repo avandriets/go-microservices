@@ -2,12 +2,15 @@ package main
 
 import (
 	"./controller"
+	"./messages"
 	"./model"
+	"context"
 	"github.com/gorilla/mux"
 	"google.golang.org/grpc"
 	"log"
 	"net/http"
 	"os"
+	"time"
 )
 
 var (
@@ -17,6 +20,11 @@ var (
 func main() {
 	rpcConn, err := connectToGrpcServer()
 	defer rpcConn.Close()
+
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+
+	model.SendContext(&ctx)
 
 	if err != nil {
 		log.Fatal(err)
@@ -46,6 +54,8 @@ func connectToGrpcServer() (*grpc.ClientConn, error) {
 	}
 
 	model.SetConnection(conn)
+	client := messages.NewContactServiceClient(conn)
+	model.SetClient(&client)
 
 	return conn, err
 }

@@ -4,13 +4,26 @@ import (
 	"../messages"
 	"context"
 	"google.golang.org/grpc"
-	"time"
 )
 
 var connection *grpc.ClientConn
+var client *messages.ContactServiceClient
+var cont *context.Context
 
-func SetConnection(database *grpc.ClientConn) {
-	connection = database
+func SendContext(c *context.Context) {
+	cont = c
+}
+
+func SetConnection(con *grpc.ClientConn) {
+	connection = con
+}
+
+func SetClient(c *messages.ContactServiceClient) {
+	client = c
+}
+
+func GetClient() messages.ContactServiceClient {
+	return *client
 }
 
 func GetConnection() *grpc.ClientConn {
@@ -18,13 +31,13 @@ func GetConnection() *grpc.ClientConn {
 }
 
 func SendContact(contact *messages.Contact) (*messages.Contact, error) {
-	c := messages.NewContactServiceClient(connection)
+	//client := messages.NewContactServiceClient(connection)
 
 	// Contact the storage-service and print out its response.
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
-	defer cancel()
+	//ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
+	//defer cancel()
 
-	r, err := c.AddContact(ctx, &messages.ContactRequest{Contact: contact})
+	r, err := (*client).AddContact(*cont, &messages.ContactRequest{Contact: contact})
 
 	return r.Contact, err
 }

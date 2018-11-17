@@ -1,13 +1,13 @@
 package main
 
 import (
-	"./controller"
 	"./messsages"
 	"./model"
 	"context"
 	"fmt"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
+	"io"
 	"log"
 	"net"
 )
@@ -20,12 +20,12 @@ const (
 )
 
 func main() {
-	config := model.Config{}
-	config.Init()
-	model.SetConfig(&config)
-
-	db := connectToDatabase()
-	defer db.Close()
+	//config := model.Config{}
+	//config.Init()
+	//model.SetConfig(&config)
+	//
+	//db := connectToDatabase()
+	//defer db.Close()
 
 	lis, err := net.Listen("tcp", port)
 	if err != nil {
@@ -43,10 +43,22 @@ func main() {
 type server struct{}
 
 func (c *server) AddContact(ctx context.Context, in *messages.ContactRequest) (*messages.ContactResponse, error) {
-	if contact, err := controller.AddContact(in.Contact); err != nil {
-		return &messages.ContactResponse{Contact: contact}, err
+	return &messages.ContactResponse{Contact: in.Contact}, nil
+}
+
+func (c *server) AddAllContacts(stream messages.ContactService_AddAllContactsServer) error {
+	for {
+		contact, err := stream.Recv()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			return nil
+		}
+		log.Println(*contact.Contact)
+		stream.Send(&messages.ContactResponse{Contact: contact.Contact})
 	}
-	return &messages.ContactResponse{Contact: &messages.Contact{Id: -1}}, nil
+	return nil
 }
 
 func connectToDatabase() *sql.DB {
