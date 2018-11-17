@@ -1,14 +1,13 @@
 package blob_reader
 
 import (
-	"../model"
 	"fmt"
 	"io"
 	"os"
 	"strings"
 )
 
-func ReadCSVFile(fileName string, transmitter model.Transmitter) {
+func ReadCSVFile(fileName string, transmitter func(string)) {
 	const BufferSize = 100
 
 	file, err := os.Open(fileName)
@@ -41,15 +40,15 @@ func ReadCSVFile(fileName string, transmitter model.Transmitter) {
 		if len(rowsArray) > 1 {
 			for index, value := range rowsArray {
 				if index < len(rowsArray)-1 {
-					transmitter.SendData(value)
+					transmitter(value)
 				} else if index == len(rowsArray)-1 && fullRow {
-					transmitter.SendData(value)
+					transmitter(value)
 				} else if index == len(rowsArray)-1 && !fullRow {
 					headOfString = value
 				}
 			}
 		} else if len(rowsArray) == 1 && fullRow {
-			transmitter.SendData(bufferedString)
+			transmitter(bufferedString)
 		} else if len(rowsArray) == 1 && !fullRow {
 			headOfString = bufferedString
 		}

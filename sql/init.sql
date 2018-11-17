@@ -1,10 +1,11 @@
-DROP TABLE if exists test_issue.public.csvdata;
+DROP TABLE if exists csvdata;
 
-CREATE TABLE test_issue.public.csvdata
+CREATE TABLE csvdata
 (
-  "Id"	NUMERIC PRIMARY KEY,
-  "compounds"	TEXT,
-  "volume"	NUMERIC,
+  "id"	NUMERIC PRIMARY KEY,
+  "name"	TEXT,
+  "email"	TEXT,
+  "phone"	TEXT,
   created_at timestamp  NOT NULL  DEFAULT current_timestamp,
   updated_at timestamp  NOT NULL  DEFAULT current_timestamp
 );
