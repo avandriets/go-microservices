@@ -7,10 +7,17 @@ import (
 	"time"
 )
 
-var connection *grpc.ClientConn
+var (
+	connection *grpc.ClientConn
+	client     messages.ContactServiceClient
+)
 
-func SetConnection(database *grpc.ClientConn) {
-	connection = database
+func SetClient(c *messages.ContactServiceClient) {
+	client = *c
+}
+
+func SetConnection(c *grpc.ClientConn) {
+	connection = c
 }
 
 func GetConnection() *grpc.ClientConn {
@@ -18,13 +25,11 @@ func GetConnection() *grpc.ClientConn {
 }
 
 func SendContact(contact *messages.Contact) (*messages.Contact, error) {
-	c := messages.NewContactServiceClient(connection)
-
 	// Contact the storage-service and print out its response.
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
-	r, err := c.AddContact(ctx, &messages.ContactRequest{Contact: contact})
+	r, err := client.AddContact(ctx, &messages.ContactRequest{Contact: contact})
 
 	return r.Contact, err
 }

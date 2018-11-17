@@ -2,6 +2,7 @@ package main
 
 import (
 	"./controller"
+	"./messages"
 	"./model"
 	"github.com/gorilla/mux"
 	"google.golang.org/grpc"
@@ -46,6 +47,8 @@ func connectToGrpcServer() (*grpc.ClientConn, error) {
 	}
 
 	model.SetConnection(conn)
+	client := messages.NewContactServiceClient(conn)
+	model.SetClient(&client)
 
 	return conn, err
 }
