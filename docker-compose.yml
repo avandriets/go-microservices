@@ -19,8 +19,7 @@ services:
     go-csv-reader-service:
       restart: always
       environment:
-        TC_SERVER_HOST: go-storage-service
-        TC_SERVER_PORT: 50051
+        TC_GRPC_SERVER_URL: go-storage-service:50051
       container_name: go-csv-reader-service
       image: "docker.go-example.com/go-csv-reader-service:latest"
       build:
@@ -39,8 +38,6 @@ services:
       image: "docker.go-example.com/go-storage-service:latest"
       build:
         context: ./storage-service
-      ports:
-      - "50051:50051"
 
 volumes:
     data-pstgresql:

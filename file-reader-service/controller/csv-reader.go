@@ -1,9 +1,9 @@
 package controller
 
 import (
-	"../blob-reader"
 	"../messages"
 	"../model"
+	"../reader"
 	"fmt"
 	"log"
 	"net/http"
@@ -27,6 +27,6 @@ func dataSender(row string) {
 	}
 }
 
-func CSVReader(w http.ResponseWriter, r *http.Request) {
-	blob_reader.ReadCSVFile("./data/data.csv", dataSender)
+func CsvReader(w http.ResponseWriter, r *http.Request) {
+	reader.ReadCsvFile("./data/data.csv", dataSender)
 }

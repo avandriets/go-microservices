@@ -1,4 +1,4 @@
-package blob_reader
+package reader
 
 import (
 	"fmt"
@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-func ReadCSVFile(fileName string, transmitter func(string)) {
+func ReadCsvFile(fileName string, transmitter func(string)) {
 	const BufferSize = 100
 
 	file, err := os.Open(fileName)

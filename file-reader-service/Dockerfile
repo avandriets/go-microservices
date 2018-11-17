@@ -6,8 +6,8 @@ WORKDIR /build
 
 RUN go get -d -v ./...
 
-RUN go build -o service main.go
-FROM busybox:glibc
+RUN CGO_ENABLED=0 go build -a -tags netgo -ldflags '-w -extldflags "-static"' -o service main.go
+FROM scratch
 COPY --from=builder /build/service /app/
 COPY --from=builder /build/data /app/data
 

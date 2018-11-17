@@ -15,7 +15,7 @@ var (
 )
 
 func main() {
-	rpcConn, err := connectToGRPCServer()
+	rpcConn, err := connectToGrpcServer()
 	defer rpcConn.Close()
 
 	if err != nil {
@@ -23,20 +23,20 @@ func main() {
 	}
 
 	r := mux.NewRouter()
-	r.HandleFunc("/read-csv-file", controller.CSVReader).Methods("GET")
+	// Just for testing purpose
+	r.HandleFunc("/read-csv-file", controller.CsvReader).Methods("GET")
 
 	if err := http.ListenAndServe(":9000", r); err != nil {
 		log.Fatal(err)
 	}
 }
 
-func connectToGRPCServer() (*grpc.ClientConn, error) {
+func connectToGrpcServer() (*grpc.ClientConn, error) {
 
-	serverPort, okP := os.LookupEnv("TC_SERVER_PORT")
-	serverHost, okS := os.LookupEnv("TC_SERVER_HOST")
+	serverUrl, ok := os.LookupEnv("TC_GRPC_SERVER_URL")
 
-	if okS && okP {
-		address = serverHost + ":" + serverPort
+	if ok {
+		address = serverUrl
 	}
 
 	// Set up a connection to the storage-service.

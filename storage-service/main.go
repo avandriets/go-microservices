@@ -19,8 +19,6 @@ const (
 	port = ":50051"
 )
 
-type server struct{}
-
 func main() {
 	config := model.Config{}
 	config.Init()
@@ -42,8 +40,10 @@ func main() {
 	}
 }
 
+type server struct{}
+
 func (c *server) AddContact(ctx context.Context, in *messages.ContactRequest) (*messages.ContactResponse, error) {
-	if contact, err := controller.AddContactToDB(in.Contact); err != nil {
+	if contact, err := controller.AddContact(in.Contact); err != nil {
 		return &messages.ContactResponse{Contact: contact}, err
 	}
 	return &messages.ContactResponse{Contact: &messages.Contact{Id: -1}}, nil
