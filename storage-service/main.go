@@ -6,10 +6,9 @@ import (
 	"./model"
 	"context"
 	"fmt"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/reflection"
+	"github.com/gorilla/mux"
 	"log"
-	"net"
+	"net/http"
 )
 
 import _ "github.com/lib/pq"
@@ -20,24 +19,31 @@ const (
 )
 
 func main() {
-	config := model.Config{}
-	config.Init()
-	model.SetConfig(&config)
+	r := mux.NewRouter()
+	// Just for testing purpose
+	r.HandleFunc("/post-test", controller.JsonRequest4Test).Methods("POST")
 
-	db := connectToDatabase()
-	defer db.Close()
-
-	lis, err := net.Listen("tcp", port)
-	if err != nil {
-		log.Fatalf("failed to listen: %v", err)
+	if err := http.ListenAndServe(":50051", r); err != nil {
+		log.Fatal(err)
 	}
-	s := grpc.NewServer()
-	messages.RegisterContactServiceServer(s, &server{})
-	// Register reflection service on gRPC storage-service.
-	reflection.Register(s)
-	if err := s.Serve(lis); err != nil {
-		log.Fatalf("failed to serve: %v", err)
-	}
+	//config := model.Config{}
+	//config.Init()
+	//model.SetConfig(&config)
+	//
+	//db := connectToDatabase()
+	//defer db.Close()
+	//
+	//lis, err := net.Listen("tcp", port)
+	//if err != nil {
+	//	log.Fatalf("failed to listen: %v", err)
+	//}
+	//s := grpc.NewServer()
+	//messages.RegisterContactServiceServer(s, &server{})
+	//// Register reflection service on gRPC storage-service.
+	//reflection.Register(s)
+	//if err := s.Serve(lis); err != nil {
+	//	log.Fatalf("failed to serve: %v", err)
+	//}
 }
 
 type server struct{}

@@ -15,12 +15,12 @@ var (
 )
 
 func main() {
-	rpcConn, err := connectToGrpcServer()
-	defer rpcConn.Close()
-
-	if err != nil {
-		log.Fatal(err)
-	}
+	//rpcConn, err := connectToGrpcServer()
+	//defer rpcConn.Close()
+	//
+	//if err != nil {
+	//	log.Fatal(err)
+	//}
 
 	r := mux.NewRouter()
 	// Just for testing purpose

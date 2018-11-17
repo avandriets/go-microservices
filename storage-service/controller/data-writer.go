@@ -3,8 +3,17 @@ package controller
 import (
 	"../messsages"
 	"../model"
+	"encoding/json"
 	"log"
+	"net/http"
 )
+
+type TestRequest struct {
+	Id    int    `json:"id"`
+	Name  string `json:"name"`
+	Email string `json:"email"`
+	Phone string `json:"phone"`
+}
 
 func AddContact(c *messages.Contact) (*messages.Contact, error) {
 
@@ -35,4 +44,15 @@ func getContactById(id int32) *messages.Contact {
 	}
 
 	return &contact
+}
+
+func JsonRequest4Test(w http.ResponseWriter, r *http.Request) {
+	jsonData := TestRequest{1, "Alex", "Alex@gmail.com", "00033354"}
+
+	encoder := json.NewEncoder(w)
+	err := encoder.Encode(&jsonData)
+
+	if err != nil {
+		log.Printf("HTTP %s", err)
+	}
 }
