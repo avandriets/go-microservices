@@ -16,7 +16,7 @@ $ docker-compose up --build or just docker-compose up
 ## Endpoints
 * http://localhost:9000/read-csv-file (GET) initiate processing csv file that stored inside container
 
-I understand that I should use POST method and upload file to the server and than processing it but it is just for
+I understand that I should use POST method and upload file to the server and then processing it but it is just for
 test purpose to initiate processing
 
 * if you want start services not in docker you should do something with data file go-microservices/data/data.csv
